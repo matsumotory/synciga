@@ -198,6 +198,9 @@ void Usage() {
   cerr << "  synciga [options] <my_jid> <src_file> <dst_full_jid>:<dst_file> (client sending)" << endl;
   cerr << "  synciga [options] <my_jid> <src_full_jid>:<src_file> <dst_file> (client rcv'ing)" << endl;
   cerr << "           --verbose" << endl;
+  cerr << "           --sync-dir=<sync-dir>" << endl;
+  cerr << "           --remote-dir=<remotec-dir>" << endl;
+  cerr << "           --verbose" << endl;
   cerr << "           --xmpp-host=<host>" << endl;
   cerr << "           --xmpp-port=<port>" << endl;
   cerr << "           --xmpp-use-tls=(true|false)" << endl;
@@ -570,6 +573,7 @@ int main(int argc, char **argv) {
 
   char path[MAX_PATH];
   string sync_dir;
+  string remote_dir;
 #if WIN32
   GetCurrentDirectoryA(MAX_PATH, path);
 #else
@@ -596,8 +600,10 @@ int main(int argc, char **argv) {
       gXmppHost = value;
     } else if (name == "xmpp-port") {
       gXmppPort = ParseIntArg(name, value);
-    } else if (name == "dir") {
+    } else if (name == "sync-dir") {
       sync_dir = value;
+    } else if (name == "remote-dir") {
+      remote_dir = value;
     } else if (name == "xmpp-use-tls") {
       gXmppUseTls = ParseBoolArg(name, value)?
           buzz::TLS_REQUIRED : buzz::TLS_DISABLED;
@@ -674,7 +680,8 @@ int main(int argc, char **argv) {
   cout << " OK" << endl;
   cout << "Assigned FullJID " << user_jid_str << endl;
   cout << "Input below command on client synciga" << endl << endl;
-  cout << "./synciga --sync --dir=" << sync_dir << " " << gUserJid.Str() << " " << user_jid_str << endl;
+  if (as_server)
+    cout << "./synciga --sync --remote-dir=" << sync_dir << " " << gUserJid.Str() << " " << user_jid_str << endl;
 
   // Prepare the random number generator.
   talk_base::InitRandom(user_jid_str.c_str(), user_jid_str.size());
@@ -722,7 +729,9 @@ int main(int argc, char **argv) {
             if (mask_str == "IN_CLOSE_WRITE" && prev_mask_str !=  "IN_CLOSE_NOWRITE") {
               cout << "Syncing file start: " << filename << endl;
               string message("recv:");
-              message.append(sync_dir + string("/") + filename);
+              if (remote_dir.empty())
+                remote_dir = sync_dir;
+              message.append(remote_dir + string("/") + filename);
               stream = session_client.CreateTunnel(gDstJid, message);
               sending = true;
               success = pump.ProcessStream(stream, sync_dir + string("/") + filename, sending);
