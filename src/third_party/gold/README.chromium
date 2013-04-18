@@ -1,0 +1,19 @@
+Name: gold
+URL: http://www.gnu.org/software/binutils/
+Version: 2.21.1
+License: GPL v2
+Security Critical: no
+
+Description:
+This directory contains a binary of the gold linker from GNU binutils.
+It was built from binutils-2.21.1 on 64-bit Ubuntu Lucid as follows:
+
+1) Fetch tarball: http://ftp.gnu.org/gnu/binutils/binutils-2.21.1.tar.bz2
+2) Unpack, then
+    ./configure --enable-gold=default --enable-threads
+3) make maybe-all-gold; strip gold/ld-new
+4) mv gold/ld-new path/to/this/dir/gold64
+
+(ld.bfd is a forwarding script that is in place because the NaCl build
+depends on there being a script with that name in the same directory as
+ld.)
