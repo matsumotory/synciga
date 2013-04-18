@@ -674,7 +674,7 @@ int main(int argc, char **argv) {
   cout << " OK" << endl;
   cout << "Assigned FullJID " << user_jid_str << endl;
   cout << "Input below command on client synciga" << endl << endl;
-  cout << "./synciga --sync " << gUserJid.Str() << " " << user_jid_str << endl;
+  cout << "./synciga --sync --dir=" << sync_dir << " " << gUserJid.Str() << " " << user_jid_str << endl;
 
   // Prepare the random number generator.
   talk_base::InitRandom(user_jid_str.c_str(), user_jid_str.size());
@@ -710,6 +710,7 @@ int main(int argc, char **argv) {
       for (;;) {
         notify.WaitForEvents();
         size_t count = notify.GetEventCount();
+        string prev_mask_str;
         while (count > 0) {
           InotifyEvent event;
           bool got_event = notify.GetEvent(&event);
@@ -718,7 +719,7 @@ int main(int argc, char **argv) {
             event.DumpTypes(mask_str);
             filename = event.GetName();
             LOG(INFO) << "[watch " << watch_dir << "] " << "event mask: \"" << mask_str << "\", " << "filename: \"" << filename << "\"";
-            if (mask_str == "IN_CLOSE_WRITE") {
+            if (mask_str == "IN_CLOSE_WRITE" && prev_mask_str !=  "IN_CLOSE_NOWRITE") {
               cout << "Syncing file start: " << filename << endl;
               string message("recv:");
               message.append(sync_dir + string("/") + filename);
@@ -733,6 +734,7 @@ int main(int argc, char **argv) {
                 cout << "Syncing file end: " << filename << endl;
               }
             }
+            prev_mask_str = mask_str;
           }
           count--;
         }
