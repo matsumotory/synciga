@@ -60,7 +60,7 @@ The file is transfered to ${REMOTE_HOME_DIR}/hoge.txt of the server at home unde
 
 Very coool.
 
-# License
+## License
 under the MIT License:
 
 * http://www.opensource.org/licenses/mit-license.php
