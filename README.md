@@ -5,7 +5,7 @@
 - optional
 
 ```
-yum -y install nss-devel gtk2-devel alsa-lib-devel.x86_64
+yum -y install nss-devel gtk2-devel alsa-lib-devel
 ```
 
 - build
@@ -24,21 +24,23 @@ make
 - Login google talk server and input password for Gmail Account
 
 ```
-cp -p out/Release/synciga ${REMOTE_HOME_DIR}/.
-cd ${REMOTE_HOME_DIR}
-./synciga myacount@gmail.com
+cp -p out/Release/synciga ${HOME_DIR}/bin/.
+synciga --sync-dir=./syncer/ myaccount@gmail.com
 ```
 
 - Getting my Full JID from login information
 
 ```
-$ ./out/Release/synciga myaccount@gmail.com
-Directory: /tmp/synciga
+$ synciga --sync-dir=./syncer/ myaccount@gmail.com
+Directory: ./syncer/
 Password:
-connecting...
-logging in...
-logged in...
-Logged in as myaccount@gmail.com/synciga*******  < Full JID
+Connecting... OK
+Logging in... OK
+Logged in... OK
+Assigned FullJID myaccount@gmail.com/synciga********
+Input below command on client synciga
+
+synciga --sync --remote-dir=./syncer/ myaccount@gmail.com myaccount@gmail.com/synciga********
 ```
 
 ### Run syncer client using Gmail account at any other place
@@ -46,17 +48,23 @@ Logged in as myaccount@gmail.com/synciga*******  < Full JID
 - Login google talk server and input password for Gmail Account
 
 ```
-cp -p out/Release/synciga ${HOME_DIR}
-./synciga myacount@gmail.com myacount@gmail.com/synciga*******
+cp -p out/Release/synciga ${HOME_DIR}/bin/
+synciga --sync --remote-dir=./syncer/ myaccount@gmail.com myaccount@gmail.com/synciga********
+```
+
+or
+
+```
+synciga --sync --remote-dir=./syncer/ --sync-dir=./test_sync/ myaccount@gmail.com myaccount@gmail.com/synciga********
 ```
 
 - create file into ${HOME_DIR}
 
 ```
-echo hoge >> ${HOME_DIR}/hoge.txt
+echo hoge >> ./test_sync/hoge.txt
 ```
 
-The file is transfered to ${REMOTE_HOME_DIR}/hoge.txt of the server at home under NAT.
+The file is transfered to ./syncer/hoge.txt of the server at home under NAT.
 
 Very coool.
 
