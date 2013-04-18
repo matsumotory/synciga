@@ -353,17 +353,19 @@ public:
   void OnStateChange(buzz::XmppEngine::State state) {
     switch (state) {
     case buzz::XmppEngine::STATE_START:
-      cout << "connecting..." << endl;
+      cout << "Connecting...";
       break;
     case buzz::XmppEngine::STATE_OPENING:
-      cout << "logging in..." << endl;
+      cout << " OK" << endl;
+      cout << "Logging in...";
       break;
     case buzz::XmppEngine::STATE_OPEN:
-      cout << "logged in..." << endl;
+      cout << " OK" << endl;
+      cout << "Logged in...";
       talk_base::Thread::Current()->Post(NULL, MSG_LOGIN_COMPLETE);
       break;
     case buzz::XmppEngine::STATE_CLOSED:
-      cout << "logged out..." << endl;
+      cout << "Logged out..." << endl;
       talk_base::Thread::Current()->Post(NULL, MSG_LOGIN_FAILED);
       break;
     }
@@ -664,8 +666,10 @@ int main(int argc, char **argv) {
   }
 
   string user_jid_str = pump.client()->jid().Str();
-  cout << "Logged in OK." << endl;
-  cout << "FullJID: " << user_jid_str << endl;
+  cout << " OK" << endl;
+  cout << "Assigned FullJID " << user_jid_str << endl;
+  cout << "Input below command on client synciga" << endl << endl;
+  cout << "./synciga --sync " << gUserJid.Str() << " " << user_jid_str << endl;
 
   // Prepare the random number generator.
   talk_base::InitRandom(user_jid_str.c_str(), user_jid_str.size());
@@ -721,6 +725,7 @@ int main(int argc, char **argv) {
                 ids.push_back(MSG_DONE);
                 ids.push_back(MSG_LOGIN_FAILED);
                 Loop(ids);
+                cout << "Syncing file end: " << filename << endl;
               }
             }
           }

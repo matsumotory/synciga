@@ -2,3 +2,4 @@ GPATH
 GRTAGS
 GTAGS
 out/
+src/Makefile
