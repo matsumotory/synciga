@@ -567,8 +567,19 @@ int main(int argc, char **argv) {
 
   // TODO: Default the username to the current users's name.
 
-  // Parse the arguments.
 
+  char path[MAX_PATH];
+  string sync_dir;
+#if WIN32
+  GetCurrentDirectoryA(MAX_PATH, path);
+#else
+  if (NULL == getcwd(path, MAX_PATH))
+    Error("Unable to get current path");
+#endif
+
+  sync_dir = string(path);
+
+  // Parse the arguments.
   int index = 1;
   while (index < argc) {
     string name, value;
@@ -585,6 +596,8 @@ int main(int argc, char **argv) {
       gXmppHost = value;
     } else if (name == "xmpp-port") {
       gXmppPort = ParseIntArg(name, value);
+    } else if (name == "dir") {
+      sync_dir = value;
     } else if (name == "xmpp-use-tls") {
       gXmppUseTls = ParseBoolArg(name, value)?
           buzz::TLS_REQUIRED : buzz::TLS_DISABLED;
@@ -601,15 +614,7 @@ int main(int argc, char **argv) {
   if (!gUserJid.IsValid())
     Error("bad arguments");
 
-  char path[MAX_PATH];
-#if WIN32
-  GetCurrentDirectoryA(MAX_PATH, path);
-#else
-  if (NULL == getcwd(path, MAX_PATH))
-    Error("Unable to get current path");
-#endif
-
-  cout << "Directory: " << string(path) << endl;
+  cout << "Directory: " << sync_dir << endl;
 
   buzz::Jid gSrcJid;
   buzz::Jid gDstJid;
@@ -695,7 +700,7 @@ int main(int argc, char **argv) {
   if (as_server) {
     pump.Serve(&session_client);
   } else if (syncer_enable) {
-    string watch_dir = string(path);
+    string watch_dir = sync_dir;
     try {
       Inotify notify;
       InotifyWatch watch(watch_dir, IN_ALL_EVENTS);
@@ -716,10 +721,10 @@ int main(int argc, char **argv) {
             if (mask_str == "IN_CLOSE_WRITE") {
               cout << "Syncing file start: " << filename << endl;
               string message("recv:");
-              message.append(filename);
+              message.append(sync_dir + string("/") + filename);
               stream = session_client.CreateTunnel(gDstJid, message);
               sending = true;
-              success = pump.ProcessStream(stream, filename, sending);
+              success = pump.ProcessStream(stream, sync_dir + string("/") + filename, sending);
               if (success) {
                 ids.clear();
                 ids.push_back(MSG_DONE);
