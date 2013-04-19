@@ -679,9 +679,10 @@ int main(int argc, char **argv) {
   string user_jid_str = pump.client()->jid().Str();
   cout << " OK" << endl;
   cout << "Assigned FullJID " << user_jid_str << endl;
-  cout << "Input below command on client synciga" << endl << endl;
-  if (as_server)
+  if (as_server) {
+    cout << "Input below command on client synciga" << endl << endl;
     cout << "./synciga --sync --remote-dir=" << sync_dir << " " << gUserJid.Str() << " " << user_jid_str << endl;
+  }
 
   // Prepare the random number generator.
   talk_base::InitRandom(user_jid_str.c_str(), user_jid_str.size());
