@@ -55,6 +55,16 @@
         '../main/synciga.cc',
         '../main/inotify-cxx.cc',
       ],
+      'include_dirs': [
+        '../mruby/include',
+        '../mruby/src',
+      ],
+      'cflags': [
+        '-fPIC',
+      ],
+      'libraries': [
+        'mruby/build/host/lib/libmruby.a',
+      ],
     },  # target synciga
   ],
 }

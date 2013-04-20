@@ -68,6 +68,7 @@ CFLAGS_Debug := \
 	-fvisibility=hidden \
 	-pipe \
 	-fPIC \
+	-fPIC \
 	-Wno-format \
 	-Wno-unused-result \
 	-O0 \
@@ -87,6 +88,8 @@ INCS_Debug := \
 	-I. \
 	-Ithird_party \
 	-Ithird_party/webrtc \
+	-Imruby/include \
+	-Imruby/src \
 	-Ithird_party/jsoncpp/overrides/include \
 	-Ithird_party/jsoncpp/source/include \
 	-Ithird_party/gtest/include
@@ -157,6 +160,7 @@ CFLAGS_Release := \
 	-fvisibility=hidden \
 	-pipe \
 	-fPIC \
+	-fPIC \
 	-Wno-format \
 	-Wno-unused-result \
 	-O2 \
@@ -178,6 +182,8 @@ INCS_Release := \
 	-I. \
 	-Ithird_party \
 	-Ithird_party/webrtc \
+	-Imruby/include \
+	-Imruby/src \
 	-Ithird_party/jsoncpp/overrides/include \
 	-Ithird_party/jsoncpp/source/include \
 	-Ithird_party/gtest/include
@@ -240,6 +246,7 @@ LDFLAGS_Release := \
 
 LIBS := \
 	 \
+	mruby/build/host/lib/libmruby.a \
 	-lcrypto \
 	-ldl \
 	-lrt \

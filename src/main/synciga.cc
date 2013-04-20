@@ -36,6 +36,9 @@
 
 #include "inotify-cxx.h"
 
+#include <mruby.h>
+#include <mruby/compile.h>
+
 using namespace std;
 
 #ifndef MAX_PATH
@@ -703,6 +706,11 @@ int main(int argc, char **argv) {
   string filename;
   bool sending;
   talk_base::StreamInterface* stream = NULL;
+
+  // mruby test
+  mrb_state* mrb = mrb_open();
+  mrb_load_string(mrb, "puts 'mruby added test'");
+  mrb_close(mrb);
 
   // Establish the appropriate connection.
   if (as_server) {
