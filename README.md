@@ -1,12 +1,15 @@
 # synciga
 
-File Syncing Tool for NAT using P2P
+## File Syncing Tool for NAT using P2P
 
-- Authenticate    
+- __Authenticate__    
   Google Talk
 
-- Session manager   
+- __Session manager__   
   Google Talk
+
+- __Transfer__    
+  P2P
 
 ## How to build
 
