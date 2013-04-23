@@ -3,4 +3,4 @@
 export builddir_name ?= src/third_party/webrtc/modules/out
 .PHONY: all
 all:
-	$(MAKE) -C ../../.. G711 audio_processing_sse2 G722 webrtc_i420 video_processing_sse2 PCM16B remote_bitrate_estimator bitrate_controller webrtc_opus paced_sender iLBC iSACFix iSAC audio_device CNG rtp_rtcp audio_processing NetEq audio_coding_module webrtc_video_coding webrtc_utility audio_conference_mixer video_processing video_render_module media_file video_capture_module
+	$(MAKE) -C ../../.. video_processing_sse2 bitrate_controller G711 iLBC iSACFix remote_bitrate_estimator paced_sender audio_processing_sse2 iSAC webrtc_i420 webrtc_opus CNG PCM16B G722 NetEq rtp_rtcp audio_processing audio_device audio_coding_module webrtc_video_coding webrtc_utility media_file video_capture_module video_render_module video_processing audio_conference_mixer

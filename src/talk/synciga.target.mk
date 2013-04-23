@@ -190,7 +190,9 @@ INCS_Release := \
 
 OBJS := \
 	$(obj).target/$(TARGET)/main/synciga.o \
-	$(obj).target/$(TARGET)/main/inotify-cxx.o
+	$(obj).target/$(TARGET)/main/inotify-cxx.o \
+	$(obj).target/$(TARGET)/main/logger.o \
+	$(obj).target/$(TARGET)/main/customxmpppump.o
 
 # Add to the list of files we specially track dependencies for.
 all_deps += $(OBJS)

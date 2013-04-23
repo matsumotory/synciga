@@ -3,4 +3,4 @@
 export builddir_name ?= src/third_party/webrtc/common_audio/out
 .PHONY: all
 all:
-	$(MAKE) -C ../../.. signal_processing resampler vad
+	$(MAKE) -C ../../.. signal_processing vad resampler

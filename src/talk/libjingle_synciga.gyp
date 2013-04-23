@@ -54,6 +54,8 @@
       'sources': [
         '../main/synciga.cc',
         '../main/inotify-cxx.cc',
+        '../main/logger.cc',
+        '../main/customxmpppump.cc',
       ],
       'include_dirs': [
         '../mruby/include',

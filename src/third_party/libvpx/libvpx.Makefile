@@ -3,4 +3,4 @@
 export builddir_name ?= src/third_party/libvpx/out
 .PHONY: all
 all:
-	$(MAKE) -C ../.. libvpx_asm_offsets libvpx_obj_int_extract libvpx_asm_offsets_vp9 gen_asm_offsets_vp8 libvpx_intrinsics gen_asm_offsets_vp9 libvpx
+	$(MAKE) -C ../.. libvpx_obj_int_extract libvpx_intrinsics libvpx_asm_offsets libvpx_asm_offsets_vp9 gen_asm_offsets_vp8 gen_asm_offsets_vp9 libvpx

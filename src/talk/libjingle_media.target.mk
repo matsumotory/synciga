@@ -75,10 +75,13 @@ CFLAGS_Debug := \
 	-I/usr/lib64/gtk-2.0/include \
 	-I/usr/include/atk-1.0 \
 	-I/usr/include/cairo \
+	-I/usr/include/gdk-pixbuf-2.0 \
 	-I/usr/include/pango-1.0 \
 	-I/usr/include/pixman-1 \
 	-I/usr/include/freetype2 \
-	-I/usr/include/libpng12 \
+	-I/usr/include/libpng15 \
+	-I/usr/include/libdrm \
+	-I/usr/include/harfbuzz \
 	-Wno-format \
 	-Wno-unused-result \
 	-O0 \
@@ -182,10 +185,13 @@ CFLAGS_Release := \
 	-I/usr/lib64/gtk-2.0/include \
 	-I/usr/include/atk-1.0 \
 	-I/usr/include/cairo \
+	-I/usr/include/gdk-pixbuf-2.0 \
 	-I/usr/include/pango-1.0 \
 	-I/usr/include/pixman-1 \
 	-I/usr/include/freetype2 \
-	-I/usr/include/libpng12 \
+	-I/usr/include/libpng15 \
+	-I/usr/include/libdrm \
+	-I/usr/include/harfbuzz \
 	-Wno-format \
 	-Wno-unused-result \
 	-O2 \
