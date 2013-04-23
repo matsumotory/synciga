@@ -1,4 +1,12 @@
-# File Syncing Tool for NAT
+# synciga
+
+File Syncing Tool for NAT using P2P
+
+- Authenticate    
+  Google Talk
+
+- Session manager   
+  Google Talk
 
 ## How to build
 
