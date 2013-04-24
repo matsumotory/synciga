@@ -56,6 +56,9 @@
         '../main/inotify-cxx.cc',
         '../main/logger.cc',
         '../main/customxmpppump.cc',
+        '../main/error.cc',
+        '../main/synciga_parserarg.cc',
+        '../main/synciga_thread.cc',
       ],
       'include_dirs': [
         '../mruby/include',

@@ -2,22 +2,22 @@
 #include <iostream>
 #include <string>
 
-#include "talk/base/basicdefs.h"
-#include "talk/base/common.h"
-#include "talk/base/helpers.h"
-#include "talk/base/logging.h"
-#include "talk/base/ssladapter.h"
-#include "talk/base/stringutils.h"
-#include "talk/base/thread.h"
-#include "talk/p2p/base/sessionmanager.h"
-#include "talk/p2p/client/autoportallocator.h"
+//#include "talk/base/basicdefs.h"
+//#include "talk/base/common.h"
+//#include "talk/base/helpers.h"
+//#include "talk/base/logging.h"
+//#include "talk/base/ssladapter.h"
+//#include "talk/base/stringutils.h"
+//#include "talk/base/thread.h"
+//#include "talk/p2p/base/sessionmanager.h"
+//#include "talk/p2p/client/autoportallocator.h"
 #include "talk/p2p/client/sessionmanagertask.h"
 #include "talk/xmpp/xmppengine.h"
 #include "talk/session/tunnel/tunnelsessionclient.h"
 #include "talk/xmpp/xmppclient.h"
 #include "talk/xmpp/xmppclientsettings.h"
 #include "talk/xmpp/xmpppump.h"
-#include "talk/xmpp/xmppsocket.h"
+//#include "talk/xmpp/xmppsocket.h"
 
 #include "customxmpppump.h"
 

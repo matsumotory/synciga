@@ -192,7 +192,10 @@ OBJS := \
 	$(obj).target/$(TARGET)/main/synciga.o \
 	$(obj).target/$(TARGET)/main/inotify-cxx.o \
 	$(obj).target/$(TARGET)/main/logger.o \
-	$(obj).target/$(TARGET)/main/customxmpppump.o
+	$(obj).target/$(TARGET)/main/customxmpppump.o \
+	$(obj).target/$(TARGET)/main/error.o \
+	$(obj).target/$(TARGET)/main/synciga_parserarg.o \
+	$(obj).target/$(TARGET)/main/synciga_thread.o
 
 # Add to the list of files we specially track dependencies for.
 all_deps += $(OBJS)

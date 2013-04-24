@@ -21,28 +21,29 @@
 #include "config.h"
 #endif  // HAVE_CONFIG_H
 
-#include "talk/base/sslconfig.h"  // For SSL_USE_*
+#include "talk/base/sslconfig.h"
 
-#include "talk/base/basicdefs.h"
-#include "talk/base/common.h"
-#include "talk/base/helpers.h"
-#include "talk/base/logging.h"
+//#include "talk/base/basicdefs.h"
+//#include "talk/base/common.h"
+//#include "talk/base/helpers.h"
+//#include "talk/base/logging.h"
 #include "talk/base/ssladapter.h"
-#include "talk/base/stringutils.h"
-#include "talk/base/thread.h"
-#include "talk/p2p/base/sessionmanager.h"
+//#include "talk/base/stringutils.h"
+//#include "talk/base/thread.h"
+//#include "talk/p2p/base/sessionmanager.h"
 #include "talk/p2p/client/autoportallocator.h"
 #include "talk/p2p/client/sessionmanagertask.h"
 #include "talk/xmpp/xmppengine.h"
 #include "talk/session/tunnel/tunnelsessionclient.h"
-#include "talk/xmpp/xmppclient.h"
-#include "talk/xmpp/xmppclientsettings.h"
+//#include "talk/xmpp/xmppclient.h"
+//#include "talk/xmpp/xmppclientsettings.h"
 #include "talk/xmpp/xmpppump.h"
 #include "talk/xmpp/xmppsocket.h"
 
 #include "inotify-cxx.h"
 #include "logger.h"
 #include "customxmpppump.h"
+#include "error.h"
 
 #include <mruby.h>
 #include <mruby/compile.h>
@@ -74,128 +75,16 @@ bool syncer_enable = false;
 buzz::TlsOptions gXmppUseTls = buzz::TLS_REQUIRED;
 static DebugLog debug_log_;
 
-// Prints out a usage message then exits.
-void Usage() {
-  cerr << "Usage:" << endl;
-  cerr << "  synciga --sync    <my_jid> <dst_full_jid>              (syncer client mode)" << endl;
-  cerr << "  synciga [options] <my_jid>                             (server mode)" << endl;
-  cerr << "  synciga [options] <my_jid> <src_file> <dst_full_jid>:<dst_file> (client sending)" << endl;
-  cerr << "  synciga [options] <my_jid> <src_full_jid>:<src_file> <dst_file> (client rcv'ing)" << endl;
-  cerr << "           --verbose" << endl;
-  cerr << "           --sync-dir=<sync-dir>" << endl;
-  cerr << "           --remote-dir=<remotec-dir>" << endl;
-  cerr << "           --verbose" << endl;
-  cerr << "           --xmpp-host=<host>" << endl;
-  cerr << "           --xmpp-port=<port>" << endl;
-  cerr << "           --xmpp-use-tls=(true|false)" << endl;
-  exit(1);
-}
+// synciga_parserarg.cc
+bool ParseArg(const char* arg, string* name, string* value);
+int ParseIntArg(const string& name, const string& value);
+bool ParseBoolArg(const string& name, const string& value);
+void ParseFileArg(const char* arg, buzz::Jid* jid, string* file);
+void SetConsoleEcho(bool on);
 
-// Prints out an error message, a usage message, then exits.
-void Error(const string& msg) {
-  cerr << "error: " << msg << endl;
-  cerr << endl;
-  Usage();
-}
+// synciga_thread.cc
+uint32 Loop(const vector<uint32>& ids);
 
-void FatalError(const string& msg) {
-  cerr << "error: " << msg << endl;
-  cerr << endl;
-  exit(1);
-}
-
-// Determines whether the given string is an option.  If so, the name and
-// value are appended to the given strings.
-bool ParseArg(const char* arg, string* name, string* value) {
-  if (strncmp(arg, "--", 2) != 0)
-    return false;
-
-  const char* eq = strchr(arg + 2, '=');
-  if (eq) {
-    if (name)
-      name->append(arg + 2, eq);
-    if (value)
-      value->append(eq + 1, arg + strlen(arg));
-  } else {
-    if (name)
-      name->append(arg + 2, arg + strlen(arg));
-    if (value)
-      value->clear();
-  }
-
-  return true;
-}
-
-int ParseIntArg(const string& name, const string& value) {
-  char* end;
-  long val = strtol(value.c_str(), &end, 10);
-  if (*end != '\0')
-    Error(string("value of option ") + name + " must be an integer");
-  return static_cast<int>(val);
-}
-
-#ifdef WIN32
-#pragma warning(push)
-// disable "unreachable code" warning b/c it varies between dbg and opt
-#pragma warning(disable: 4702)
-#endif
-bool ParseBoolArg(const string& name, const string& value) {
-  if (value == "true")
-    return true;
-  else if (value == "false")
-    return false;
-  else {
-    Error(string("value of option ") + name + " must be true or false");
-    return false;
-  }
-}
-#ifdef WIN32
-#pragma warning(pop)
-#endif
-
-void ParseFileArg(const char* arg, buzz::Jid* jid, string* file) {
-  const char* sep = strchr(arg, ':');
-  if (!sep) {
-    *file = arg;
-  } else {
-    buzz::Jid jid_arg(string(arg, sep-arg));
-    if (jid_arg.IsBare())
-      Error("A full JID is required for the source or destination arguments.");
-    *jid = jid_arg;
-    *file = string(sep+1);
-  }
-}
-
-
-void SetConsoleEcho(bool on) {
-#ifdef WIN32
-  HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
-  if ((hIn == INVALID_HANDLE_VALUE) || (hIn == NULL))
-    return;
-
-  DWORD mode;
-  if (!GetConsoleMode(hIn, &mode))
-    return;
-
-  if (on) {
-    mode = mode | ENABLE_ECHO_INPUT;
-  } else {
-    mode = mode & ~ENABLE_ECHO_INPUT;
-  }
-
-  SetConsoleMode(hIn, mode);
-#else
-  int re;
-  if (on)
-    re = system("stty echo");
-  else
-    re = system("stty -echo");
-  if (-1 == re)
-    return;
-#endif
-}
-
-// Fills in a settings object with the values from the arguments.
 buzz::XmppClientSettings LoginSettings() {
   buzz::XmppClientSettings xcs;
   xcs.set_user(gUserJid.node());
@@ -206,21 +95,6 @@ buzz::XmppClientSettings LoginSettings() {
   xcs.set_server(server);
   xcs.set_use_tls(gXmppUseTls);
   return xcs;
-}
-
-// Runs the current thread until a message with the given ID is seen.
-uint32 Loop(const vector<uint32>& ids) {
-  talk_base::Message msg;
-  while (talk_base::Thread::Current()->Get(&msg)) {
-    if (msg.phandler == NULL) {
-      if (find(ids.begin(), ids.end(), msg.message_id) != ids.end())
-        return msg.message_id;
-      cout << "orphaned message: " << msg.message_id;
-      continue;
-    }
-    talk_base::Thread::Current()->Dispatch(&msg);
-  }
-  return 0;
 }
 
 #ifdef WIN32
